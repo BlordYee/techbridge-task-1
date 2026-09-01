@@ -32,4 +32,4 @@ motifs (the connector lines, the left-accent program cards) reused instead of ad
 new decoration per section. The main challenge was avoiding generic "AI template"
 patterns — I kept revisiting the layout to cut anything that felt like a default
 rounded-card-with-shadow treatment and replaced it with something tied to the brand.
-<img src="chrome_screenshot_Sep 1, 2026 6_18_34 PM GMT+01_00.png" width="400">
+<img src="chrome_screenshot_Sep 1, 2026 6_36_10 PM GMT+01_00.png" width="400">
