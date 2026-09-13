@@ -614,6 +614,92 @@ p { color: var(--text-muted); max-width: 62ch; }
 .difficulty-intermediate-adv { background: #E4E6F2; color: var(--navy-soft); }
 .difficulty-advanced { background: var(--navy); color: var(--white); }
 
+/* ===== Track selector (Task 4) ===== */
+.track-select { padding: 0 0 12px; }
+
+.track-select-heading {
+  font-size: 1.1rem;
+  margin-bottom: 18px;
+}
+
+.track-toggle {
+  display: inline-flex;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px;
+  gap: 4px;
+}
+
+.track-btn {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.94rem;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  border-radius: 999px;
+  padding: 11px 22px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.track-btn:hover { color: var(--navy); }
+
+.track-btn.active {
+  background: var(--navy);
+  color: var(--white);
+}
+
+.track-btn[data-track="dataAnalytics"].active { background: var(--navy); }
+.track-btn[data-track="webDevelopment"].active { background: var(--green); }
+
+.currently-viewing {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+  padding: 12px 18px;
+  border-radius: 8px;
+  background: var(--bg-tint);
+  border: 1px solid #D3ECD1;
+  max-width: fit-content;
+}
+
+.currently-viewing.accent-data {
+  background: #EEF0F8;
+  border-color: #D6D9EC;
+}
+
+.cv-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.cv-track {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--green-deep);
+  letter-spacing: 0.03em;
+}
+
+.currently-viewing.accent-data .cv-track { color: var(--navy); }
+
+.noscript-note {
+  margin-top: 20px;
+  padding: 14px 18px;
+  background: #FFF6E5;
+  border: 1px solid #F3DFA8;
+  border-radius: 8px;
+  color: #6B5A20;
+  font-size: 0.92rem;
+  max-width: 640px;
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: 1fr; }
@@ -673,4 +759,8 @@ p { color: var(--text-muted); max-width: 62ch; }
   .timeline-dot { width: 13px; height: 13px; }
   .task-card { padding: 18px 18px; }
   .task-card-top { flex-direction: column; align-items: flex-start; gap: 6px; }
+
+  .track-toggle { display: flex; width: 100%; }
+  .track-btn { flex: 1; text-align: center; padding: 11px 10px; font-size: 0.88rem; }
+  .currently-viewing { max-width: none; }
 }
