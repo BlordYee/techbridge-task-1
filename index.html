@@ -17,7 +17,7 @@
 <header class="site-header">
   <div class="wrap header-row">
     <a href="#top" class="brand">
-      <img src="techbridge-logo.png" alt="TechBridge logo" class="brand-logo">
+      <img src="images/techbridge-logo.png" alt="TechBridge logo" class="brand-logo">
     </a>
 
     <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="primaryNav" aria-label="Open menu">
@@ -29,6 +29,7 @@
       <a href="programs.html">Programs</a>
       <a href="#internship">Internship</a>
       <a href="tasks.html">Roadmap</a>
+      <a href="challenges.html">Challenges</a>
       <a href="#community">Community</a>
       <a href="#contact">Contact</a>
       <a href="#apply" class="nav-cta">Apply now</a>
@@ -176,7 +177,7 @@
 <footer class="site-footer">
   <div class="wrap footer-grid">
     <div class="footer-brand">
-      <img src="techbridge-logo.png" alt="TechBridge logo" class="footer-logo">
+      <img src="images/techbridge-logo.png" alt="TechBridge logo" class="footer-logo">
       <p>Bridging Learning to Real-World Experience</p>
     </div>
 
@@ -185,6 +186,7 @@
       <a href="programs.html">Programs</a>
       <a href="#internship">Internship</a>
       <a href="tasks.html">Roadmap</a>
+      <a href="challenges.html">Challenges</a>
       <a href="#community">Community</a>
       <a href="#contact">Contact</a>
     </nav>
@@ -200,16 +202,16 @@
 </footer>
 
 <script>
-  const navToggle = document.getElementById('navToggle');
-  const primaryNav = document.getElementById('primaryNav');
-  navToggle.addEventListener('click', () => {
-    const isOpen = primaryNav.classList.toggle('is-open');
-    navToggle.setAttribute('aria-expanded', isOpen);
+  const navToggleBtn = document.getElementById('navToggle');
+  const primaryNavEl = document.getElementById('primaryNav');
+  navToggleBtn.addEventListener('click', () => {
+    const isOpen = primaryNavEl.classList.toggle('is-open');
+    navToggleBtn.setAttribute('aria-expanded', isOpen);
   });
-  primaryNav.querySelectorAll('a').forEach(link => {
+  Array.from(primaryNavEl.querySelectorAll('a')).forEach(link => {
     link.addEventListener('click', () => {
-      primaryNav.classList.remove('is-open');
-      navToggle.setAttribute('aria-expanded', 'false');
+      primaryNavEl.classList.remove('is-open');
+      navToggleBtn.setAttribute('aria-expanded', 'false');
     });
   });
 </script>

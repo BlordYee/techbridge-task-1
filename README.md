@@ -1,20 +1,22 @@
-# TechBridge — Website (Tasks 1–4)
+# TechBridge — Website (Tasks 1–5)
 
 Website for TechBridge by Baselink Services Limited, built for the TechBridge Web Development Internship.
 
 ## Structure
 ```
-techbridge-task-4/
+techbridge-task-5/
 ├── index.html
 ├── programs.html
 ├── tasks.html
+├── challenges.html
 ├── style.css
 ├── script.js
+├── challenges.js
 └── images/
     └── techbridge-logo.png
 ```
 
-`index.html` is the homepage (Task 1). `programs.html` is the dedicated Programs experience (Task 2). `tasks.html` is the interactive Internship Roadmap (Tasks 3 & 4) — visitors pick a track (Web Development or Data Analytics) and JavaScript renders that track's 8-task timeline, with days, descriptions, difficulty, and status, without a page reload. All pages share the same `style.css` and navigation/footer for visual consistency. The nav label evolved from "Tasks" to "Roadmap" in Task 4 to reflect the new two-track, interactive version of the page.
+`index.html` is the homepage (Task 1). `programs.html` is the dedicated Programs experience (Task 2). `tasks.html` is the interactive Internship Roadmap (Tasks 3 & 4) — pick a track and JavaScript renders that track's 8-task timeline without a page reload. `challenges.html` is the new Challenge Hub (Task 5) — 8 realistic practice challenges (4 Data Analytics, 4 Web Development) that visitors can filter by track and difficulty, with a detail modal for each one. All pages share the same `style.css` and navigation/footer for visual consistency.
 
 ## Built with
 HTML5 + CSS3 (no frameworks). Fonts: Space Grotesk (headings) and Inter (body) via Google Fonts.
@@ -83,11 +85,41 @@ tested by checking the data arrays independently (all 8 tasks, correct days,
 correct difficulty order for both tracks) before wiring up the UI, which made it
 easy to trust the rendering logic once the data was verified correct.
 
+## Developer note — Task 5 (Challenge Hub)
+I built the Challenge Hub as its own page with 8 challenges — 4 per track — each one
+an array of plain objects (name, track, difficulty, description, outcome, plus
+modal-only fields like objective/skills/tools/time). Filtering uses two independent
+state variables, `currentTrackFilter` and `currentDifficultyFilter`; a single
+`matchesFilters()` function checks a challenge against both with simple AND logic,
+so "Data Analytics + Advanced" narrows to exactly the cards matching both, not just
+one. Clicking "View Challenge" calls `openModal(id)`, which looks the challenge up
+with `Array.prototype.find` and fills in a single reusable modal — no per-challenge
+markup duplicated in the HTML. The modal closes via its own button, a click on the
+dark overlay (but not the modal itself), or Escape. I learned that filtering two
+independent dimensions is really just "render whatever currently passes both
+checks" — the UI never needs to know it's combining two filters, it just re-renders
+from the same source array every time either one changes. The trickiest problem
+wasn't the filtering logic at all: I found two real cross-browser bugs while
+testing rather than just eyeballing the code. First, `const modalOverlay =
+document.getElementById("modalOverlay")` (and several others like it) is a genuine
+Safari/WebKit SyntaxError — declaring a `const`/`let` with the same name as an
+element's `id` throws "Can't create duplicate variable that shadows a global
+property" in Safari, because elements with an `id` are auto-exposed as global
+`window` properties. I fixed it by suffixing every DOM reference variable with `El`
+(`modalOverlayEl`, `challengeGridEl`, etc.) across every page, including the nav
+toggle script that's been on every page since Task 1. Second, the modal used the
+CSS `inset: 0` shorthand, which isn't supported in Safari before version 14.1 —
+without it, the overlay had no defined position and never actually appeared even
+though the JavaScript correctly removed its `hidden` attribute. I replaced it with
+explicit `top/right/bottom/left: 0`. Both were confirmed as real, documented browser
+issues, not just my own test setup being outdated — worth fixing given how many
+visitors (and possibly graders) use Safari or an iPhone.
+
 ## Notes on placeholder links
 The application form and WhatsApp community links were not available at the time of
 building these tasks, so all CTA buttons currently point to `#` and are marked with a
 short "link to be added" note beneath them. Swap in the real links across `index.html`,
-`programs.html`, and `tasks.html`:
+`programs.html`, `tasks.html`, and `challenges.html`:
 - Search for `Open the application form` / `Apply for TechBridge Internship` /
   `Apply for this program` to update the application link.
 - Search for `Join on WhatsApp` to update the community link.
