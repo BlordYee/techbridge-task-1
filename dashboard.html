@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intern Dashboard — TechBridge</title>
+<meta name="description" content="The TechBridge intern dashboard — track your progress across all 8 internship tasks, explore the Challenge Hub, and learn about modern web technologies.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <a href="index.html" class="brand">
+      <img src="images/techbridge-logo.png" alt="TechBridge logo" class="brand-logo">
+    </a>
+
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="primaryNav" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="primary-nav" id="primaryNav">
+      <a href="index.html#about">About</a>
+      <a href="programs.html">Programs</a>
+      <a href="tasks.html">Roadmap</a>
+      <a href="challenges.html">Challenges</a>
+      <a href="dashboard.html" class="is-active">Dashboard</a>
+      <a href="index.html#contact">Contact</a>
+      <a href="index.html#apply" class="nav-cta">Apply now</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- WELCOME SECTION -->
+  <section class="dash-welcome">
+    <div class="wrap dash-welcome-inner">
+      <a href="index.html" class="back-link">&larr; Back to home</a>
+      <div class="dash-welcome-row">
+        <div>
+          <p class="dash-eyebrow">Intern Dashboard</p>
+          <h1 id="welcomeName">Welcome back, Uche</h1>
+          <p class="dash-subtitle" id="welcomeTrack">Web Development Intern</p>
+        </div>
+        <span class="status-pill status-current" id="internshipStatus">In Progress</span>
+      </div>
+      <p class="dash-welcome-note">This dashboard is a working demo built as part of the TechBridge internship itself — the name above is a sample intern, and the progress below reflects this project's real build history so far.</p>
+    </div>
+  </section>
+
+  <!-- PROGRESS SECTION -->
+  <section class="dash-progress">
+    <div class="wrap">
+      <h2>Internship Progress</h2>
+      <div class="progress-card">
+        <div class="progress-stats">
+          <div class="progress-stat">
+            <span class="progress-stat-num" id="statCompleted">0</span>
+            <span class="progress-stat-label">Completed</span>
+          </div>
+          <div class="progress-stat">
+            <span class="progress-stat-num" id="statRemaining">0</span>
+            <span class="progress-stat-label">Remaining</span>
+          </div>
+          <div class="progress-stat">
+            <span class="progress-stat-num" id="statPercent">0%</span>
+            <span class="progress-stat-label">Overall progress</span>
+          </div>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progressBarFill"></div>
+        </div>
+        <p class="progress-caption" id="progressCaption">0 / 8 tasks completed</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TASK TRACKER -->
+  <section class="dash-tasks" id="tasksSection">
+    <div class="wrap">
+      <h2>Task Tracker</h2>
+      <p class="section-lede">All 8 internship tasks. Mark a task complete as you finish it, or filter to focus on what's left.</p>
+
+      <div class="filter-toggle" role="group" aria-label="Filter tasks by status" id="taskFilterGroup">
+        <button type="button" class="filter-btn active" data-value="all">All</button>
+        <button type="button" class="filter-btn" data-value="completed">Completed</button>
+        <button type="button" class="filter-btn" data-value="in-progress">In Progress</button>
+        <button type="button" class="filter-btn" data-value="not-started">Not Started</button>
+      </div>
+
+      <noscript>
+        <p class="noscript-note">This dashboard needs JavaScript to track progress, filter tasks, and show task details. Please enable JavaScript to use it fully.</p>
+      </noscript>
+
+      <div class="task-grid" id="taskGrid">
+        <!-- Task cards injected here by dashboard.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- CHALLENGE HUB CONNECTION -->
+  <section class="dash-challenge-cta">
+    <div class="wrap challenge-cta-inner">
+      <div>
+        <h2>Challenge Hub</h2>
+        <p id="challengeCount">8 challenges available</p>
+      </div>
+      <a href="challenges.html" class="btn btn-primary">Explore Challenges</a>
+    </div>
+  </section>
+
+  <!-- MODERN WEB TECHNOLOGIES -->
+  <section class="dash-tech" id="techSection">
+    <div class="wrap">
+      <h2>Modern Web Technologies</h2>
+      <p class="section-lede">A quick look at some of the frameworks and backend tools used to build complete web platforms like this one.</p>
+
+      <div class="filter-toggle tech-toggle" role="group" aria-label="Choose a technology to learn about" id="techExplorerGroup">
+        <button type="button" class="filter-btn" data-value="nextjs">Next.js</button>
+        <button type="button" class="filter-btn" data-value="vuejs">Vue.js</button>
+        <button type="button" class="filter-btn" data-value="angular">Angular</button>
+        <button type="button" class="filter-btn" data-value="backend">Backend</button>
+      </div>
+
+      <div class="tech-panel" id="techPanel">
+        <!-- Tech content injected here by dashboard.js -->
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <img src="images/techbridge-logo.png" alt="TechBridge logo" class="footer-logo">
+      <p>Bridging Learning to Real-World Experience</p>
+    </div>
+
+    <nav class="footer-nav">
+      <a href="index.html#about">About</a>
+      <a href="programs.html">Programs</a>
+      <a href="index.html#internship">Internship</a>
+      <a href="tasks.html">Roadmap</a>
+      <a href="challenges.html">Challenges</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="index.html#community">Community</a>
+      <a href="index.html#contact">Contact</a>
+    </nav>
+
+    <div class="footer-contact">
+      <a href="mailto:techbridgebaslink@gmail.com">techbridgebaslink@gmail.com</a>
+      <p>TechBridge by Baselink Services Limited</p>
+    </div>
+  </div>
+  <div class="wrap footer-bottom">
+    <p>&copy; 2026 TechBridge by Baselink Services Limited. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- TASK DETAIL MODAL -->
+<div class="modal-overlay" id="taskModalOverlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="taskModalTitle">
+    <button type="button" class="modal-close" id="taskModalCloseBtn" aria-label="Close task details">&times;</button>
+
+    <div class="modal-badges">
+      <span class="task-number-badge" id="taskModalNumber"></span>
+      <span class="status-pill" id="taskModalStatus"></span>
+    </div>
+
+    <h2 id="taskModalTitle"></h2>
+    <p class="modal-description" id="taskModalDescription"></p>
+
+    <button type="button" class="btn btn-primary" id="taskModalActionBtn">Mark as Completed</button>
+  </div>
+</div>
+
+<script src="dashboard.js"></script>
+<script>
+  const navToggleBtn = document.getElementById('navToggle');
+  const primaryNavEl = document.getElementById('primaryNav');
+  navToggleBtn.addEventListener('click', () => {
+    const isOpen = primaryNavEl.classList.toggle('is-open');
+    navToggleBtn.setAttribute('aria-expanded', isOpen);
+  });
+  Array.from(primaryNavEl.querySelectorAll('a')).forEach(link => {
+    link.addEventListener('click', () => {
+      primaryNavEl.classList.remove('is-open');
+      navToggleBtn.setAttribute('aria-expanded', 'false');
+    });
+  });
+</script>
+
+</body>
+</html>

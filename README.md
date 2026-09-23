@@ -1,25 +1,34 @@
-# TechBridge — Website (Tasks 1–5)
+# TechBridge — Website (Tasks 1–6)
 
 Website for TechBridge by Baselink Services Limited, built for the TechBridge Web Development Internship.
 
 ## Structure
 ```
-techbridge-task-5/
+techbridge-task-6/
 ├── index.html
 ├── programs.html
 ├── tasks.html
 ├── challenges.html
+├── dashboard.html
 ├── style.css
 ├── script.js
 ├── challenges.js
+├── dashboard.js
 └── images/
     └── techbridge-logo.png
 ```
 
-`index.html` is the homepage (Task 1). `programs.html` is the dedicated Programs experience (Task 2). `tasks.html` is the interactive Internship Roadmap (Tasks 3 & 4) — pick a track and JavaScript renders that track's 8-task timeline without a page reload. `challenges.html` is the new Challenge Hub (Task 5) — 8 realistic practice challenges (4 Data Analytics, 4 Web Development) that visitors can filter by track and difficulty, with a detail modal for each one. All pages share the same `style.css` and navigation/footer for visual consistency.
+`index.html` is the homepage (Task 1). `programs.html` is the dedicated Programs experience (Task 2). `tasks.html` is the interactive Internship Roadmap (Tasks 3 & 4) — pick a track and JavaScript renders that track's 8-task timeline without a page reload. `challenges.html` is the Challenge Hub (Task 5) — 8 practice challenges filterable by track and difficulty, with a detail modal. `dashboard.html` is the Intern Dashboard (Task 6) — a live progress tracker, a filterable 8-task tracker with a detail modal, a link to the Challenge Hub, and an interactive "Modern Web Technologies" explorer. All pages share the same `style.css` and navigation/footer for visual consistency.
+
+## Navigation, consolidated in Task 6
+The header nav had grown to 8 links by Task 5. Rather than let it keep growing with
+every task, I trimmed it to the core pages — About, Programs, Roadmap, Challenges,
+Dashboard, Contact, plus the Apply CTA — and moved "Internship" and "Community"
+(both homepage anchors) into the footer only, which now lists every section on the
+site. This keeps the header usable long-term as more pages get added in later tasks.
 
 ## Built with
-HTML5 + CSS3 (no frameworks). Fonts: Space Grotesk (headings) and Inter (body) via Google Fonts.
+HTML5 + CSS3 + JavaScript (no frameworks). Fonts: Space Grotesk (headings) and Inter (body) via Google Fonts.
 
 ## Developer note — Task 1 (Homepage)
 I designed this around the idea of TechBridge as a "bridge" — the hero uses two
@@ -114,6 +123,45 @@ though the JavaScript correctly removed its `hidden` attribute. I replaced it wi
 explicit `top/right/bottom/left: 0`. Both were confirmed as real, documented browser
 issues, not just my own test setup being outdated — worth fixing given how many
 visitors (and possibly graders) use Safari or an iPhone.
+
+## Developer note — Task 6 (Intern Dashboard)
+The dashboard is built around one array, `internTasks` — 8 objects with number,
+title, description, and status (`completed` / `in-progress` / `not-started`). Every
+other part of the page reads from this same array: `updateProgress()` counts
+completed tasks and writes the count, remaining count, percentage, and progress-bar
+width in one pass; `renderTasks()` filters the array by the active status filter and
+rebuilds the task grid; the "View Task" modal looks a task up by number with
+`Array.prototype.find`. Marking a task complete just sets `task.status =
+"completed"` on that one object, then calls `updateProgress()` and `renderTasks()`
+again — the UI has no separate "completed count" variable to keep in sync, so it
+can't drift out of sync with the underlying data. The technology explorer
+(Next.js / Vue.js / Angular / Backend) works the same way against a second object,
+`techData`, keyed by technology, with the backend entry carrying an extra `items`
+array so its panel can list Node.js, Express.js, Django, and Laravel without special-
+casing that one button. Tasks 7 and 8 are shown as "To be announced" rather than
+guessed titles, since the two most recent briefs have both renamed and reordered
+tasks from the originally-announced list, so inventing specific titles for unrevealed
+tasks would likely just be wrong. I found two real bugs by testing interactions
+directly rather than only reading the code back. First, the technology buttons used
+a `data-tech` attribute while the shared active-button helper checked
+`dataset.value` — the content still switched correctly, but no button ever visually
+looked selected, since the two attribute names never matched. I renamed the
+buttons to use `data-value` like every other filter group on the site, so one
+helper function now works for all of them. Second, and more subtle: the task
+modal's "Mark as Completed" button stayed visible even when I set its `hidden`
+property to `true` on a completed task. It turned out `.btn`'s own `display:
+inline-block` rule was silently beating the browser's default `[hidden] {
+display: none }` styling, because normal author-stylesheet rules always outrank
+normal user-agent rules in the CSS cascade, regardless of selector specificity — a
+real, reproducible browser behavior I confirmed with an isolated test page, not
+just a guess. I fixed the immediate case and then added one global rule,
+`[hidden] { display: none !important; }`, so this exact class of bug can't recur on
+any future element regardless of what other classes it has.
+
+## Sample dashboard content
+The dashboard shows a sample intern ("Uche", Web Development track) since the brief
+allows a placeholder name here — edit the `welcomeName` and `welcomeTrack` elements
+near the top of `dashboard.html` to change it.
 
 ## Notes on placeholder links
 The application form and WhatsApp community links were not available at the time of
