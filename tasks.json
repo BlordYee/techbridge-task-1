@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "title": "TechBridge Homepage",
+    "description": "Design and build the first version of the TechBridge website using HTML and CSS.",
+    "status": "completed"
+  },
+  {
+    "id": 2,
+    "title": "TechBridge Programs Experience",
+    "description": "Create a dedicated page presenting TechBridge's Data Analytics and Web Development programs.",
+    "status": "completed"
+  },
+  {
+    "id": 3,
+    "title": "Internship Tasks Experience",
+    "description": "Build an interface presenting the internship's 8-task journey and its progression.",
+    "status": "completed"
+  },
+  {
+    "id": 4,
+    "title": "Interactive Internship Roadmap",
+    "description": "Use JavaScript to let visitors switch between the Data Analytics and Web Development tracks.",
+    "status": "completed"
+  },
+  {
+    "id": 5,
+    "title": "TechBridge Challenge Hub",
+    "description": "Build an interactive hub of practice challenges with track and difficulty filtering.",
+    "status": "completed"
+  },
+  {
+    "id": 6,
+    "title": "Intern Dashboard",
+    "description": "Build an interactive dashboard where interns can track progress, manage tasks, and explore technologies.",
+    "status": "completed"
+  },
+  {
+    "id": 7,
+    "title": "TechBridge Task Management API",
+    "description": "Build a backend API with Node.js and Express, and connect the dashboard to it so tasks, progress, and status updates come from real requests instead of hardcoded data. You're using it right now.",
+    "status": "in-progress"
+  },
+  {
+    "id": 8,
+    "title": "To be announced",
+    "description": "Details for this task haven't been shared yet — check back once TechBridge announces it.",
+    "status": "not-started"
+  }
+]

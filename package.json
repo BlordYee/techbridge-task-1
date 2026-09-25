@@ -1,0 +1,15 @@
+{
+  "name": "techbridge-task-management-backend",
+  "version": "1.0.0",
+  "description": "Backend REST API for the TechBridge Intern Dashboard (Task 7).",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": ["techbridge", "express", "api"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
