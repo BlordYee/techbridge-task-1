@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
@@ -17,7 +17,7 @@
 <header class="site-header">
   <div class="wrap header-row">
     <a href="index.html" class="brand">
-      <img src="techbridge-logo.png" alt="TechBridge logo" class="brand-logo">
+      <img src="images/techbridge-logo.png" alt="TechBridge logo" class="brand-logo">
     </a>
 
     <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="primaryNav" aria-label="Open menu">
@@ -50,7 +50,12 @@
         </div>
         <span class="status-pill status-current" id="internshipStatus">In Progress</span>
       </div>
-      <p class="dash-welcome-note">This dashboard is a working demo built as part of the TechBridge internship itself — the name above is a sample intern, and the progress below reflects this project's real build history so far.</p>
+      <p class="dash-welcome-note">This dashboard is a working demo built as part of the TechBridge internship itself — the name above is a sample intern. Task data below is loaded live from a small Express API rather than being written into the page.</p>
+      <div class="api-status" id="apiStatus">
+        <span class="api-status-dot api-status-connected" id="apiStatusDot"></span>
+        <span class="api-status-label">Backend Status:</span>
+        <span id="apiStatusText">Checking…</span>
+      </div>
     </div>
   </section>
 
@@ -139,7 +144,7 @@
 <footer class="site-footer">
   <div class="wrap footer-grid">
     <div class="footer-brand">
-      <img src="techbridge-logo.png" alt="TechBridge logo" class="footer-logo">
+      <img src="images/techbridge-logo.png" alt="TechBridge logo" class="footer-logo">
       <p>Bridging Learning to Real-World Experience</p>
     </div>
 
@@ -176,12 +181,13 @@
 
     <h2 id="taskModalTitle"></h2>
     <p class="modal-description" id="taskModalDescription"></p>
+    <p class="task-modal-error" id="taskModalError" hidden></p>
 
     <button type="button" class="btn btn-primary" id="taskModalActionBtn">Mark as Completed</button>
   </div>
 </div>
 
-<script src="dashboard.js"></script>
+<script src="js/dashboard.js"></script>
 <script>
   const navToggleBtn = document.getElementById('navToggle');
   const primaryNavEl = document.getElementById('primaryNav');

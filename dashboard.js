@@ -1,65 +1,26 @@
 /* =========================================================
    TechBridge — Intern Dashboard
-   Task 6: dynamic task tracker, live progress, filtering,
-   a task detail modal, and an interactive tech explorer.
+   Task 7: the task tracker now talks to a real backend.
+   Task data is requested from the Express API (Task 7) instead
+   of being hardcoded here. The Challenge Hub connector and the
+   Modern Web Technologies explorer below are unchanged from
+   Task 6 — this task is specifically about the task tracker.
    ========================================================= */
 
-// ---------- 1. DATA: an array of task objects ----------
-// Tasks 1-6 reflect this project's real build history.
-// Tasks 7-8 haven't been announced yet, so they're placeholders.
+// ---------- 1. CONFIG ----------
+// The backend runs separately from the frontend (see backend/server.js),
+// so this needs to be an absolute URL, not a relative path.
+const API_BASE_URL = "http://localhost:3000";
 
-const internTasks = [
-  {
-    number: 1,
-    title: "TechBridge Homepage",
-    description: "Design and build the first version of the TechBridge website using HTML and CSS.",
-    status: "completed"
-  },
-  {
-    number: 2,
-    title: "TechBridge Programs Experience",
-    description: "Create a dedicated page presenting TechBridge's Data Analytics and Web Development programs.",
-    status: "completed"
-  },
-  {
-    number: 3,
-    title: "Internship Tasks Experience",
-    description: "Build an interface presenting the internship's 8-task journey and its progression.",
-    status: "completed"
-  },
-  {
-    number: 4,
-    title: "Interactive Internship Roadmap",
-    description: "Use JavaScript to let visitors switch between the Data Analytics and Web Development tracks.",
-    status: "completed"
-  },
-  {
-    number: 5,
-    title: "TechBridge Challenge Hub",
-    description: "Build an interactive hub of practice challenges with track and difficulty filtering.",
-    status: "completed"
-  },
-  {
-    number: 6,
-    title: "Intern Dashboard",
-    description: "Build an interactive dashboard where interns can track progress, manage tasks, and explore technologies. You're using it right now.",
-    status: "in-progress"
-  },
-  {
-    number: 7,
-    title: "To be announced",
-    description: "Details for this task haven't been shared yet — check back once TechBridge announces it.",
-    status: "not-started"
-  },
-  {
-    number: 8,
-    title: "To be announced",
-    description: "Details for this task haven't been shared yet — check back once TechBridge announces it.",
-    status: "not-started"
-  }
-];
+// ---------- 2. STATE ----------
+// internTasks now starts empty and is populated by fetchAllTasks() below,
+// instead of being written out by hand.
+let internTasks = [];
+let currentTaskFilter = "all";
+let currentTechKey = "nextjs";
+let modalOpenTaskId = null;
 
-// ---------- 2. DATA: technology explorer content ----------
+// ---------- 3. DATA: technology explorer content (unchanged from Task 6) ----------
 
 const techData = {
   nextjs: {
@@ -83,23 +44,22 @@ const techData = {
   backend: {
     name: "Backend Development",
     tag: "Server-side",
-    description: "Backend development is what happens behind the scenes of a website — the server that stores data, runs business logic, and responds to requests from the frontend (the part people see and click on in their browser). A few commonly used backend technologies:",
+    description: "Backend development is what happens behind the scenes of a website — the server that stores data, runs business logic, and responds to requests from the frontend (the part people see and click on in their browser). This dashboard's task tracker is a small example: the frontend you're looking at requests data from an Express server over a REST API. A few commonly used backend technologies:",
     items: [
       { name: "Node.js", blurb: "A JavaScript runtime that lets developers build servers using the same language as the frontend." },
-      { name: "Express.js", blurb: "A lightweight Node.js framework for building web servers and APIs quickly." },
+      { name: "Express.js", blurb: "A lightweight Node.js framework for building web servers and APIs quickly — it's what powers this dashboard's backend." },
       { name: "Django", blurb: "A Python framework known for helping developers build secure, database-backed backends fast." },
       { name: "Laravel", blurb: "A PHP framework popular for building web applications with a clean, expressive syntax." }
     ]
   }
 };
 
-// ---------- 3. STATE ----------
-let currentTaskFilter = "all";
-let currentTechKey = "nextjs";
-
 // ---------- 4. DOM REFERENCES ----------
-// Every variable below is suffixed so it never shares a name with
-// an element's id (a bare match can throw in Safari/WebKit).
+// Every variable below is suffixed so it never shares a name with an
+// element's id (a bare match can throw in Safari/WebKit).
+const apiStatusTextEl = document.getElementById("apiStatusText");
+const apiStatusDotEl = document.getElementById("apiStatusDot");
+
 const statCompletedEl = document.getElementById("statCompleted");
 const statRemainingEl = document.getElementById("statRemaining");
 const statPercentEl = document.getElementById("statPercent");
@@ -119,8 +79,7 @@ const taskModalStatusEl = document.getElementById("taskModalStatus");
 const taskModalTitleEl = document.getElementById("taskModalTitle");
 const taskModalDescriptionEl = document.getElementById("taskModalDescription");
 const taskModalActionBtnEl = document.getElementById("taskModalActionBtn");
-
-let modalOpenTaskNumber = null;
+const taskModalErrorEl = document.getElementById("taskModalError");
 
 // ---------- 5. HELPERS: status labels + classes ----------
 
@@ -136,10 +95,32 @@ function statusClass(status) {
   return "status-upcoming";
 }
 
-// ---------- 6. PROGRESS CALCULATION ----------
+// ---------- 6. API STATUS INDICATOR ----------
+
+function setApiStatus(connected) {
+  if (connected) {
+    apiStatusTextEl.textContent = "Connected";
+    apiStatusDotEl.className = "api-status-dot api-status-connected";
+  } else {
+    apiStatusTextEl.textContent = "Offline";
+    apiStatusDotEl.className = "api-status-dot api-status-offline";
+  }
+}
+
+// ---------- 7. PROGRESS CALCULATION ----------
 
 function updateProgress() {
   const total = internTasks.length;
+
+  if (total === 0) {
+    statCompletedEl.textContent = "—";
+    statRemainingEl.textContent = "—";
+    statPercentEl.textContent = "—";
+    progressBarFillEl.style.width = "0%";
+    progressCaptionEl.textContent = "Waiting for task data…";
+    return;
+  }
+
   const completed = internTasks.filter(function (t) {
     return t.status === "completed";
   }).length;
@@ -153,7 +134,7 @@ function updateProgress() {
   progressCaptionEl.textContent = completed + " / " + total + " tasks completed";
 }
 
-// ---------- 7. TASK CARD RENDERING ----------
+// ---------- 8. TASK CARD RENDERING ----------
 
 function matchesTaskFilter(task) {
   return currentTaskFilter === "all" || task.status === currentTaskFilter;
@@ -168,7 +149,7 @@ function createTaskCard(task) {
 
   const numberBadge = document.createElement("span");
   numberBadge.className = "task-number-badge";
-  numberBadge.textContent = "Task " + task.number;
+  numberBadge.textContent = "Task " + task.id;
 
   const statusPill = document.createElement("span");
   statusPill.className = "status-pill " + statusClass(task.status);
@@ -192,7 +173,7 @@ function createTaskCard(task) {
   viewBtn.className = "btn btn-ghost";
   viewBtn.textContent = "View Task";
   viewBtn.addEventListener("click", function () {
-    openTaskModal(task.number);
+    openTaskModal(task.id);
   });
   actions.appendChild(viewBtn);
 
@@ -202,7 +183,7 @@ function createTaskCard(task) {
     completeBtn.className = "btn btn-primary";
     completeBtn.textContent = "Mark as Completed";
     completeBtn.addEventListener("click", function () {
-      markTaskCompleted(task.number);
+      markTaskCompleted(task.id);
     });
     actions.appendChild(completeBtn);
   }
@@ -222,61 +203,131 @@ function renderTasks() {
   });
 }
 
+function showTaskGridMessage(message, isError) {
+  taskGridEl.innerHTML = "";
+  const p = document.createElement("p");
+  p.className = isError ? "task-grid-error" : "task-grid-loading";
+  p.textContent = message;
+  taskGridEl.appendChild(p);
+}
+
 function setActiveFilterButton(group, value) {
   Array.from(group.querySelectorAll(".filter-btn")).forEach(function (btn) {
     btn.classList.toggle("active", btn.dataset.value === value);
   });
 }
 
-// ---------- 8. MARK TASK COMPLETED ----------
+// ---------- 9. LOADING ALL TASKS FROM THE API ----------
 
-function markTaskCompleted(taskNumber) {
-  const task = internTasks.find(function (t) {
-    return t.number === taskNumber;
-  });
-  if (!task) return;
+async function fetchAllTasks() {
+  showTaskGridMessage("Loading tasks…", false);
 
-  task.status = "completed";
-  updateProgress();
-  renderTasks();
+  try {
+    const response = await fetch(API_BASE_URL + "/api/tasks");
+    if (!response.ok) {
+      throw new Error("Server responded with status " + response.status);
+    }
+    const data = await response.json();
 
-  // If the modal for this task is currently open, refresh it in place
-  if (modalOpenTaskNumber === taskNumber) {
-    openTaskModal(taskNumber);
+    internTasks = data;
+    setApiStatus(true);
+    updateProgress();
+    renderTasks();
+  } catch (error) {
+    internTasks = [];
+    setApiStatus(false);
+    updateProgress();
+    showTaskGridMessage(
+      "Unable to load tasks. Please check your connection or try again.",
+      true
+    );
   }
 }
 
-// ---------- 9. TASK DETAIL MODAL ----------
+// ---------- 10. MARK TASK COMPLETED (PUT request) ----------
 
-function openTaskModal(taskNumber) {
-  const task = internTasks.find(function (t) {
-    return t.number === taskNumber;
-  });
-  if (!task) return;
+async function markTaskCompleted(taskId) {
+  try {
+    const response = await fetch(API_BASE_URL + "/api/tasks/" + taskId, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "completed" })
+    });
 
-  modalOpenTaskNumber = taskNumber;
+    if (!response.ok) {
+      throw new Error("Server responded with status " + response.status);
+    }
 
-  taskModalNumberEl.textContent = "Task " + task.number;
-  taskModalStatusEl.textContent = statusLabel(task.status);
-  taskModalStatusEl.className = "status-pill " + statusClass(task.status);
-  taskModalTitleEl.textContent = task.title;
-  taskModalDescriptionEl.textContent = task.description;
+    const updatedTask = await response.json();
+    setApiStatus(true);
 
-  if (task.status === "completed") {
-    taskModalActionBtnEl.hidden = true;
-  } else {
-    taskModalActionBtnEl.hidden = false;
-    taskModalActionBtnEl.textContent = "Mark as Completed";
+    // Update the matching task in our local copy so the grid and
+    // progress numbers reflect the change immediately.
+    const task = internTasks.find(function (t) {
+      return t.id === taskId;
+    });
+    if (task) {
+      task.status = updatedTask.status;
+    }
+
+    updateProgress();
+    renderTasks();
+
+    if (modalOpenTaskId === taskId) {
+      openTaskModal(taskId);
+    }
+  } catch (error) {
+    setApiStatus(false);
+    window.alert("Couldn't update that task right now. Please check that the backend server is running and try again.");
   }
+}
+
+// ---------- 11. TASK DETAIL MODAL (GET one task) ----------
+
+async function openTaskModal(taskId) {
+  modalOpenTaskId = taskId;
+  taskModalErrorEl.hidden = true;
+  taskModalActionBtnEl.hidden = true;
+
+  taskModalNumberEl.textContent = "Task " + taskId;
+  taskModalStatusEl.textContent = "";
+  taskModalTitleEl.textContent = "Loading…";
+  taskModalDescriptionEl.textContent = "";
 
   taskModalOverlayEl.hidden = false;
   document.body.classList.add("modal-open");
+
+  try {
+    const response = await fetch(API_BASE_URL + "/api/tasks/" + taskId);
+    if (!response.ok) {
+      throw new Error("Server responded with status " + response.status);
+    }
+    const task = await response.json();
+    setApiStatus(true);
+
+    taskModalStatusEl.textContent = statusLabel(task.status);
+    taskModalStatusEl.className = "status-pill " + statusClass(task.status);
+    taskModalTitleEl.textContent = task.title;
+    taskModalDescriptionEl.textContent = task.description;
+
+    if (task.status === "completed") {
+      taskModalActionBtnEl.hidden = true;
+    } else {
+      taskModalActionBtnEl.hidden = false;
+      taskModalActionBtnEl.textContent = "Mark as Completed";
+    }
+  } catch (error) {
+    setApiStatus(false);
+    taskModalTitleEl.textContent = "Task " + taskId;
+    taskModalErrorEl.hidden = false;
+    taskModalErrorEl.textContent = "Unable to load this task's details. Please check your connection or try again.";
+  }
 }
 
 function closeTaskModal() {
   taskModalOverlayEl.hidden = true;
   document.body.classList.remove("modal-open");
-  modalOpenTaskNumber = null;
+  modalOpenTaskId = null;
 }
 
 taskModalCloseBtnEl.addEventListener("click", closeTaskModal);
@@ -294,12 +345,12 @@ document.addEventListener("keydown", function (event) {
 });
 
 taskModalActionBtnEl.addEventListener("click", function () {
-  if (modalOpenTaskNumber !== null) {
-    markTaskCompleted(modalOpenTaskNumber);
+  if (modalOpenTaskId !== null) {
+    markTaskCompleted(modalOpenTaskId);
   }
 });
 
-// ---------- 10. TASK FILTER EVENT LISTENERS ----------
+// ---------- 12. TASK FILTER EVENT LISTENERS ----------
 
 Array.from(taskFilterGroupEl.querySelectorAll(".filter-btn")).forEach(function (btn) {
   btn.addEventListener("click", function () {
@@ -309,7 +360,7 @@ Array.from(taskFilterGroupEl.querySelectorAll(".filter-btn")).forEach(function (
   });
 });
 
-// ---------- 11. TECH EXPLORER ----------
+// ---------- 13. TECH EXPLORER (unchanged from Task 6) ----------
 
 function renderTech(key) {
   const tech = techData[key];
@@ -356,7 +407,7 @@ Array.from(techExplorerGroupEl.querySelectorAll(".filter-btn")).forEach(function
   });
 });
 
-// ---------- 12. INITIAL RENDER ----------
+// ---------- 14. INITIAL LOAD ----------
 updateProgress();
-renderTasks();
+fetchAllTasks();
 renderTech(currentTechKey);

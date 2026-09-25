@@ -1106,6 +1106,54 @@ body.modal-open { overflow: hidden; }
 }
 .tech-item-list strong { color: var(--navy); }
 
+/* ===== API status + loading/error states (Task 7) ===== */
+.api-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.api-status-label { font-weight: 600; color: var(--navy); }
+
+.api-status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.api-status-dot.api-status-connected { background: var(--green); }
+.api-status-dot.api-status-offline { background: #D0453C; }
+
+.task-grid-loading,
+.task-grid-error {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 48px 20px;
+  font-size: 0.98rem;
+  max-width: none;
+}
+.task-grid-loading { color: var(--text-muted); }
+.task-grid-error {
+  color: #A5342C;
+  background: #FDEEEC;
+  border: 1px solid #F3CFC9;
+  border-radius: 8px;
+}
+
+.task-modal-error {
+  color: #A5342C;
+  background: #FDEEEC;
+  border: 1px solid #F3CFC9;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+  max-width: none;
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: 1fr; }
@@ -1191,4 +1239,6 @@ body.modal-open { overflow: hidden; }
   .challenge-cta-inner .btn { width: 100%; text-align: center; }
   .tech-panel { padding: 22px 18px; }
   .dash-tech { padding: 48px 0 60px; }
+  .api-status { flex-wrap: wrap; }
+  .task-grid-loading, .task-grid-error { padding: 36px 16px; }
 }
