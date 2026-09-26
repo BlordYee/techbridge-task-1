@@ -39,13 +39,12 @@ app.use((req, res, next) => {
 
 // ---------- Routes ----------
 
-// Friendly root route, mostly so visiting http://localhost:3000 in a
-// browser shows something useful instead of "Cannot GET /".
-app.get("/", (req, res) => {
-  res.send(
-    "TechBridge Task Management API is running. Try GET /api/tasks or GET /api/tasks/1"
-  );
-});
+// Serve the frontend (index.html, dashboard.html, css/, js/, images/)
+// from this same server, so the whole site — pages and API alike — is
+// reachable from one URL. This matters especially when deploying
+// somewhere like Replit, which exposes exactly one running process as
+// one live URL: this way there's nothing separate to configure.
+app.use(express.static(path.join(__dirname, "..", "frontend")));
 
 // GET /api/tasks — return every task
 app.get("/api/tasks", (req, res) => {
@@ -92,7 +91,10 @@ app.use("/api", (req, res) => {
   res.status(404).json({ error: "Unknown API route." });
 });
 
-app.listen(PORT, () => {
-  console.log(`TechBridge Task Management API running at http://localhost:${PORT}`);
+// Binding to 0.0.0.0 (not just "localhost") matters when this runs on a
+// host like Replit, which only detects and exposes a server that's
+// listening on all interfaces.
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`TechBridge Task Management running on port ${PORT}`);
   console.log(`Try it: http://localhost:${PORT}/api/tasks`);
 });

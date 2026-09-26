@@ -33,7 +33,9 @@ techbridge-task-management/
 
 ## How to run it
 
-**1. Start the backend** (do this first — the dashboard needs it running):
+The backend now serves the frontend too — one running process, one URL,
+nothing to keep in sync. Starting the server is the only step:
+
 ```bash
 cd backend
 npm install
@@ -41,20 +43,49 @@ npm start
 ```
 You should see:
 ```
-TechBridge Task Management API running at http://localhost:3000
+TechBridge Task Management running on port 3000
 Try it: http://localhost:3000/api/tasks
 ```
-Leave this terminal open. Visit `http://localhost:3000/api/tasks` in a
-browser to confirm you get back a JSON array of 8 tasks.
+Leave this running, then open **http://localhost:3000/** in a browser —
+that's the actual TechBridge homepage now, served by Express. Go to
+**http://localhost:3000/dashboard.html** for the dashboard itself. There's
+nothing to open as a separate file and no URL to edit — `dashboard.js`
+calls the API with a relative path, so it automatically works wherever
+this ends up running (locally, on Replit, anywhere).
 
-**2. Open the frontend.** With the backend still running, open
-`frontend/dashboard.html` directly in a browser (double-click it, or use
-a simple static server / VS Code's Live Server extension). The dashboard
-will fetch its task data from `http://localhost:3000` automatically.
+**To see the "offline" behavior**, stop the server (Ctrl+C in its
+terminal) — you obviously can't refresh a page it's no longer serving,
+so instead open dev tools' Network tab set to "Offline", or just note
+that any `fetch` here fails the same way if the process ever stops.
 
-**3. To see the "offline" behavior**, stop the backend (Ctrl+C in its
-terminal) and refresh the dashboard — it should show "Unable to load
-tasks" and "Backend Status: Offline" instead of a blank page.
+## Running this with no laptop (Replit)
+
+Since the whole site is now one Express app, this deploys cleanly to
+[Replit](https://replit.com), which runs entirely in a browser (there's a
+mobile app too) and gives you a live public URL — a solid way to view and
+screen-record this without a computer:
+
+1. Push this project to GitHub (same as your earlier tasks).
+2. On replit.com: **Create Repl → Import from GitHub** → paste your repo URL.
+3. Once it imports, open the **Shell** tab and run:
+   ```bash
+   cd backend && npm install
+   ```
+4. Set the Run command so Replit starts the server from the right folder —
+   in the `.replit` file (or the Run button's settings), set it to:
+   ```
+   cd backend && npm start
+   ```
+5. Tap **Run**. Replit opens a live preview with its own public URL
+   (something like `https://your-repl-name.username.repl.co`) — that's
+   your homepage, and `/dashboard.html` on that same URL is your dashboard.
+6. Screen record directly from that browser tab — no separate frontend
+   deployment, no URL to configure, no CORS to worry about.
+
+One thing to know: task status updates are stored in memory, not a
+database, so they can reset if Replit restarts or puts the app to sleep
+after inactivity — expected behavior for this stage of the project, not
+a bug (see the API documentation section below).
 
 The rest of the site (`index.html`, `programs.html`, `tasks.html`,
 `challenges.html`) doesn't need the backend running — only the dashboard's
@@ -106,7 +137,12 @@ reusing whatever was already loaded. I updated Task 8's record and left
 it "To be announced" as before, but updated Task 7 itself to its real
 title now that this brief exists, and moved Task 6 to "completed" since
 we've moved past it — the dashboard's progress numbers still reflect
-where the project actually stands.
+where the project actually stands. I later had `server.js` also serve
+the frontend folder with `express.static()`, so the whole site and the
+API share one origin — `dashboard.js`'s fetch calls use a relative path
+rather than a hardcoded `http://localhost:3000`, so the exact same code
+works unmodified wherever this gets deployed, without editing a URL by
+hand each time.
 
 The trickiest part wasn't the Express routes themselves — those are
 standard and I was confident in that syntax — it was verifying the whole

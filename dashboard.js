@@ -8,9 +8,12 @@
    ========================================================= */
 
 // ---------- 1. CONFIG ----------
-// The backend runs separately from the frontend (see backend/server.js),
-// so this needs to be an absolute URL, not a relative path.
-const API_BASE_URL = "http://localhost:3000";
+// Left empty on purpose: the backend (backend/server.js) now serves this
+// frontend itself, so the API lives on the exact same origin this page
+// was loaded from — a relative path like "/api/tasks" already resolves
+// correctly whether that origin is http://localhost:3000, a Replit URL,
+// or anywhere else this gets deployed. Nothing to edit here.
+const API_BASE_URL = "";
 
 // ---------- 2. STATE ----------
 // internTasks now starts empty and is populated by fetchAllTasks() below,
